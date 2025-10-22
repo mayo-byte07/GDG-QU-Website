@@ -1,11 +1,11 @@
 import './App.css'
-import Home from '../Pages/Home'
-import Navbar from '../Components/Navbar'
-import Roadmap from '../Pages/Roadmap'
+import Home from './Pages/Home'
+import Navbar from './Components/Navbar'
+import Roadmap from './Pages/Roadmap'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Footer from '../Components/FooterSection'
-import Team from '../Pages/Team'
-import Event from '../Pages/Event'
+import Footer from './Components/FooterSection'
+import Team from './Pages/Team'
+import Event from './Pages/Event'
 
 function App() {
 
