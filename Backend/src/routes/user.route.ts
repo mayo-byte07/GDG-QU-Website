@@ -4,11 +4,11 @@ import {
     getSelf,
     getUserById,
     updateUser,
-} from "../controllers/user.controller";
+} from "../controllers/user.controller.js";
 import { body, param } from "express-validator";
-import userAuthMiddleware from "../middlewares/userAuth.middleware";
-import adminAuthMiddleware from "../middlewares/adminAuth.middleware";
-import { asyncHandler } from "../utils/asyncHandler";
+import userAuthMiddleware from "../middlewares/userAuth.middleware.js";
+import adminAuthMiddleware from "../middlewares/adminAuth.middleware.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import type { Request, Response } from "express";
 
 const userRouter = Router();

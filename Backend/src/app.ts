@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import errorHandler from "./middlewares/errorHandler.middleware";
+import errorHandler from "./middlewares/errorHandler.middleware.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -28,13 +28,13 @@ app.get("/", (_, res) => {
 });
 
 // Import and use routes
-import authRouter from "./routes/auth.route";
-import userRouter from "./routes/user.route";
-import eventRouter from "./routes/event.route";
-import teamRouter from "./routes/team.route";
-import wallOfFameRouter from "./routes/wallOfFame.route";
-import projectRouter from "./routes/project.routes";
-import contactRouter from "./routes/contact.route";
+import authRouter from "./routes/auth.route.js";
+import userRouter from "./routes/user.route.js";
+import eventRouter from "./routes/event.route.js";
+import teamRouter from "./routes/team.route.js";
+import wallOfFameRouter from "./routes/wallOfFame.route.js";
+import projectRouter from "./routes/project.routes.js";
+import contactRouter from "./routes/contact.route.js";
 
 
 app.use("/api/auth", authRouter);
