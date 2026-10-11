@@ -10,6 +10,13 @@ export const AuthProvider = ({ children }) => {
   const rawBaseUrl = import.meta.env.VITE_BACKEND_URL || "";
   const API_BASE = rawBaseUrl.replace(/\/+$/, '');
 
+  // ==========================================
+  // DEBUG LOGS ADDED HERE
+  // ==========================================
+  console.log("1. RAW VITE_BACKEND_URL IS:", import.meta.env.VITE_BACKEND_URL);
+  console.log("2. FORMATTED API_BASE IS:", API_BASE);
+  // ==========================================
+
   useEffect(() => {
     const checkUserLoggedIn = async () => {
       try {
