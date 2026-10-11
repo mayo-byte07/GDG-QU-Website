@@ -6,16 +6,17 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Safely grab the base URL and remove any trailing slashes to prevent //api
+  const rawBaseUrl = import.meta.env.VITE_BACKEND_URL || "";
+  const API_BASE = rawBaseUrl.replace(/\/+$/, '');
+
   useEffect(() => {
     const checkUserLoggedIn = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/user/me`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`${API_BASE}/api/user/me`, {
+          method: "GET",
+          credentials: "include",
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -36,7 +37,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkUserLoggedIn();
-  }, []);
+  }, [API_BASE]);
 
   const login = (userData) => {
     setUser(userData);
@@ -45,7 +46,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
+    fetch(`${API_BASE}/api/auth/logout`, {
       method: "POST",
       credentials: "include",
     }).catch((error) => {
