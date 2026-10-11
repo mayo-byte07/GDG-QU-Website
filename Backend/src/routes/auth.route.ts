@@ -3,7 +3,7 @@ import {
     githubOAuth,
     googleOAuth,
     logout,
-} from "../controllers/auth.controller";
+} from "../controllers/auth.controller.js";
 import { body, query } from "express-validator";
 
 const authRouter = Router();
