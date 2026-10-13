@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ./Frontend
+    image: ${DOCKER_USERNAME}/gdg-frontend:latest
+    container_name: gdg_frontend
+    restart: unless-stopped
+    env_file:
+      - ./Frontend/.env
+    networks:
+      - gdg_net
+
+  backend:
+    build:
+      context: ./Backend
+    image: ${DOCKER_USERNAME}/gdg-backend:latest
+    container_name: gdg_backend
+    restart: unless-stopped
+    env_file:
+      - ./Backend/.env
+    expose:
+      - "5000"
+    depends_on:
+      - mongodb
+    networks:
+      - gdg_net
+    ports:
+      - "5000:5000"
+
+  mongodb:
+    image: mongo:7
+    container_name: gdg_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - gdg_net
+
+  nginx:
+    build:
+      context: ./nginx
+    image: ${DOCKER_USERNAME}/gdg-nginx:latest
+    container_name: gdg_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - gdg_net
+
+networks:
+  gdg_net:
+    driver: bridge
+
+volumes:
+  mongodb_data:

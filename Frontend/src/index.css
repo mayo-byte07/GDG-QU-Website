@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "Google Sans";
+    src: url("./assets/fonts/google_sans_regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@theme {
+    --color-google-red: #ea4335;
+    --color-google-blue: #4285f4;
+    --color-google-yellow: #f9ab00;
+    --color-google-green: #34a853;
+    --font-family-google-sans: "Google Sans", sans-serif;
+}

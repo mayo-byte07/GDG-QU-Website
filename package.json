@@ -1,0 +1,27 @@
+{
+  "name": "gdg-qu-website",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/GDG-QU/GDG-QU-Website#readme",
+  "bugs": {
+    "url": "https://github.com/GDG-QU/GDG-QU-Website/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GDG-QU/GDG-QU-Website.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix Backend\" \"npm run dev --prefix Frontend\"",
+    "dev:backend": "npm run dev --prefix Backend",
+    "dev:frontend": "npm run dev --prefix Frontend",
+    "build": "npm run build --prefix Frontend && npm run build --prefix Backend",
+    "docker:push": "docker-compose build && docker-compose push"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

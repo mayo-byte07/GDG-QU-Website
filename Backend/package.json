@@ -1,0 +1,44 @@
+{
+    "name": "gdg-backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "dev": "tsx watch src/server.ts",
+        "build": "tsup src/server.ts --format esm --clean",
+        "start": "node dist/server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/GDG-QU/GDG-QU-Website.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/GDG-QU/GDG-QU-Website/issues"
+    },
+    "homepage": "https://github.com/GDG-QU/GDG-QU-Website#readme",
+    "dependencies": {
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "express": "^5.1.0",
+        "express-rate-limit": "^8.2.1",
+        "express-validator": "^7.3.1",
+        "google-auth-library": "^10.5.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.19.4"
+    },
+    "devDependencies": {
+        "@types/cookie-parser": "^1.4.10",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.5",
+        "@types/jsonwebtoken": "^9.0.10",
+        "@types/node": "^24.10.0",
+        "tsc-alias": "^1.8.16",
+        "tsup": "^8.5.1",
+        "tsx": "^4.20.6",
+        "typescript": "^5.9.3"
+    }
+}

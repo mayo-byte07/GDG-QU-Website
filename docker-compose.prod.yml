@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  frontend:
+    image: ${DOCKER_USERNAME}/gdg-frontend:latest
+    container_name: gdg_frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - gdg_net
+
+  backend:
+    image: ${DOCKER_USERNAME}/gdg-backend:latest
+    container_name: gdg_backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    expose:
+      - "8000"
+    networks:
+      - gdg_net
+
+  nginx:
+    image: ${DOCKER_USERNAME}/gdg-nginx:latest
+    container_name: gdg_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - gdg_net
+
+networks:
+  gdg_net:
+    driver: bridge
