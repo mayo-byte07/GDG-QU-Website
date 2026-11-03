@@ -3,7 +3,6 @@ import {
   FaHome,
   FaUsers,
   FaCalendarAlt,
-  FaTrophy,
   FaEnvelope,
   FaUser,
   FaUserPlus,
@@ -36,12 +35,6 @@ const navLinks = [
     icon: <FaProjectDiagram />,
     color: colors.red,
     href: "/contributions",
-  },
-  {
-    name: "Wall of Fame",
-    icon: <FaTrophy />,
-    color: colors.blue,
-    href: "/wall-of-fame",
   },
   {
     name: "Contact Us",

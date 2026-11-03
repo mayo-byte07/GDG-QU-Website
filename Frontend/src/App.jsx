@@ -10,14 +10,12 @@ import Profile from "./Pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import Protected from "./utils/Protected";
 import ContactPage from "./Pages/Contact";
-import WallOfFame from "./Pages/WallOfFame";
 
 //TODO: Modularize the whole thing later
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import AdminEvent from "./Pages/Admin/AdminEvent";
 import AdminTeamPage from "./Pages/Admin/AdminTeam";
 import AdminContactPage from "./Pages/Admin/AdminContactPage";
-import AdminWallOfFamePage from "./Pages/Admin/AdminWallOfFame";
 import AdminProtected from "./utils/AdminProtected";
 
 //TODO: Modularize the whole thing later
@@ -34,7 +32,6 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/contributions" element={<Contributions />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/wall-of-fame" element={<WallOfFame />} />
             <Route
               path="/profile"
               element={
@@ -58,7 +55,6 @@ function App() {
             <Route path="event" element={<AdminEvent />} />
             <Route path="team" element={<AdminTeamPage />} />
             <Route path="contact" element={<AdminContactPage />} />
-            <Route path="wall-of-fame" element={<AdminWallOfFamePage />} />
           </Route>
         </Routes>
       </Router>
