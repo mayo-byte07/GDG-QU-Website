@@ -3,7 +3,6 @@ import GDG_Logo from "../../assets/images/gdg_logo.webp";
 import { MdPerson, MdMenu, MdClose } from "react-icons/md";
 import { FaHome, FaGraduationCap, FaCalendarAlt } from "react-icons/fa";
 import { FaRoad, FaMessage } from "react-icons/fa6";
-import { PiWallFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 
 const AdminSidebar = () => {
@@ -50,13 +49,6 @@ const AdminSidebar = () => {
       colorClass: "text-google-green",
       hoverBg: "hover:bg-google-green/10",
       link: "/admin/contact",
-    },
-    {
-      Icon: PiWallFill,
-      label: "Wall of Fame",
-      colorClass: "text-google-red",
-      hoverBg: "hover:bg-google-red/10",
-      link: "/admin/wall-of-fame",
     },
   ];
 

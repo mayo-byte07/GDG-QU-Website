@@ -8,7 +8,11 @@ import siddhantSharma from "../assets/team/siddhant-sharma.jpg";
 import piyushKumar from "../assets/team/piyush-kumar.jpg";
 import utkrishtKaushik from "../assets/team/utkrisht-kaushik.jpg";
 
-const emptySocialLinks = {};
+const emptySocialLinks = () => ({
+  github: "",
+  linkedin: "",
+  email: "",
+});
 
 const teamMembers = [
   {
@@ -21,7 +25,7 @@ const teamMembers = [
     bio: "Quantum University",
     fullBio: "Organizer at GDG on Campus, Quantum University.",
     skills: [],
-    social: emptySocialLinks,
+    social: emptySocialLinks(),
   },
   {
     id: "kanisha-kumari",
@@ -33,7 +37,7 @@ const teamMembers = [
     bio: "Quantum University",
     fullBio: "Organizer at GDG on Campus, Quantum University.",
     skills: [],
-    social: emptySocialLinks,
+    social: emptySocialLinks(),
   },
   {
     id: "nitin-gupta",
@@ -45,7 +49,7 @@ const teamMembers = [
     bio: "Quantum University",
     fullBio: "Core team member at GDG on Campus, Quantum University.",
     skills: [],
-    social: emptySocialLinks,
+    social: emptySocialLinks(),
   },
   {
     id: "amitabh-raj",
@@ -57,7 +61,7 @@ const teamMembers = [
     bio: "Quantum University",
     fullBio: "Core team member at GDG on Campus, Quantum University.",
     skills: [],
-    social: emptySocialLinks,
+    social: emptySocialLinks(),
   },
   {
     id: "keshav-singhal",
@@ -69,7 +73,7 @@ const teamMembers = [
     bio: "Quantum University Roorkee",
     fullBio: "Graphics Lead at GDG on Campus, Quantum University Roorkee.",
     skills: [],
-    social: emptySocialLinks,
+    social: emptySocialLinks(),
   },
   {
     id: "vanshika-gupta",
@@ -81,7 +85,7 @@ const teamMembers = [
     bio: "Quantum University",
     fullBio: "Core team member at GDG on Campus, Quantum University.",
     skills: [],
-    social: emptySocialLinks,
+    social: emptySocialLinks(),
   },
   {
     id: "siddhant-sharma",
@@ -93,7 +97,7 @@ const teamMembers = [
     bio: "Quantum University",
     fullBio: "Core team member at GDG on Campus, Quantum University.",
     skills: [],
-    social: emptySocialLinks,
+    social: emptySocialLinks(),
   },
   {
     id: "piyush-kumar",
@@ -105,7 +109,7 @@ const teamMembers = [
     bio: "Quantum University Roorkee",
     fullBio: "Core team member at GDG on Campus, Quantum University Roorkee.",
     skills: [],
-    social: emptySocialLinks,
+    social: emptySocialLinks(),
   },
   {
     id: "utkrisht-kaushik",
@@ -117,7 +121,7 @@ const teamMembers = [
     bio: "Quantum University",
     fullBio: "Core team member at GDG on Campus, Quantum University.",
     skills: [],
-    social: emptySocialLinks,
+    social: emptySocialLinks(),
   },
 ];
 

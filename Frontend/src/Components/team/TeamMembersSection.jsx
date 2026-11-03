@@ -117,21 +117,37 @@ const ProfileModal = ({ member, category, onClose }) => {
               </div>
 
               <div className="flex space-x-4 mt-8">
-                {Object.entries(member.social).map(
-                  ([platform, link]) =>
-                    link && (
-                      <a
-                        key={platform}
-                        href={link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-3 bg-white rounded-2xl shadow-sm text-gray-400 hover:text-gray-900 hover:shadow-md transition-all transform hover:-translate-y-1"
-                        title={platform}
-                      >
-                        {socialIcons[platform]}
-                      </a>
-                    )
-                )}
+                {["github", "linkedin", "email"].map((platform) => {
+                  const link = member.social?.[platform] || "";
+                  const iconClassName = `p-3 bg-white rounded-2xl shadow-sm text-gray-400 transition-all ${
+                    link
+                      ? "hover:text-gray-900 hover:shadow-md hover:-translate-y-1"
+                      : "cursor-default"
+                  }`;
+
+                  return link ? (
+                    <a
+                      key={platform}
+                      href={link}
+                      target={platform === "email" ? undefined : "_blank"}
+                      rel={platform === "email" ? undefined : "noopener noreferrer"}
+                      className={iconClassName}
+                      title={platform}
+                      aria-label={platform}
+                    >
+                      {socialIcons[platform]}
+                    </a>
+                  ) : (
+                    <span
+                      key={platform}
+                      className={iconClassName}
+                      title={platform}
+                      aria-label={`${platform} link not set`}
+                    >
+                      {socialIcons[platform]}
+                    </span>
+                  );
+                })}
               </div>
             </div>
 
