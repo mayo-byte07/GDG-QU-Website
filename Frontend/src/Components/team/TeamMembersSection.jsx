@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   FaLinkedin,
   FaGithub,
@@ -9,20 +9,12 @@ import {
   FaUserTie,
   FaUserGraduate,
   FaUsers,
-  FaShareAlt,
   FaTimes,
-  FaCalendarAlt,
   FaStar,
   FaCode,
-  FaExternalLinkAlt,
-  FaSpinner,
-  FaExclamationTriangle,
 } from "react-icons/fa";
 
-import red_frame from "../../assets/frames/square-red.png";
-import blue_frame from "../../assets/frames/square-blue.png";
-import yellow_frame from "../../assets/frames/square-yellow.png";
-import green_frame from "../../assets/frames/square-green.png";
+import teamMembers from "../../data/teamMembers";
 
 const colors = {
   blue: "#4285f4",
@@ -34,38 +26,23 @@ const colors = {
 const categoryStyles = {
   mentors: {
     color: colors.yellow,
-    bgColor: "#ffe7a5",
     icon: <FaCrown />,
-    label: "Mentor",
-    frame: yellow_frame,
   },
   teamLead: {
     color: colors.red,
-    bgColor: "#f8d8d8",
     icon: <FaUserTie />,
-    label: "Lead",
-    frame: red_frame,
   },
   teamHeads: {
     color: colors.blue,
-    bgColor: "#c3ecf6",
     icon: <FaUserGraduate />,
-    label: "Head",
-    frame: blue_frame,
   },
   coreTeam: {
     color: colors.green,
-    bgColor: "#ccf6c5",
     icon: <FaUsers />,
-    label: "Core",
-    frame: green_frame,
   },
   default: {
     color: colors.blue,
-    bgColor: "#c3ecf6",
     icon: <FaUsers />,
-    label: "Member",
-    frame: blue_frame,
   },
 };
 
@@ -75,20 +52,6 @@ const socialIcons = {
   twitter: <FaTwitter />,
   instagram: <FaInstagram />,
   email: <FaEnvelope />,
-};
-
-const formatDate = (isoString) => {
-  if (!isoString) return "2026";
-  const date = new Date(isoString);
-  return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-};
-
-const getCategory = (position) => {
-  const pos = position?.toLowerCase() || "";
-  if (pos.includes("mentor")) return "mentors";
-  if (pos === "lead" || pos.includes("team lead")) return "teamLead";
-  if (pos.includes("head")) return "teamHeads";
-  return "coreTeam";
 };
 
 const ProfileModal = ({ member, category, onClose }) => {
@@ -223,200 +186,36 @@ const ProfileModal = ({ member, category, onClose }) => {
   );
 };
 
-const TeamMemberCard = ({
-  member,
-  category,
-  index,
-  isVisible,
-  setActiveMember,
-}) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const { color, icon, label, frame, bgColor } =
-    categoryStyles[category] || categoryStyles.default;
-
-  return (
-    <div
-      className={`relative group scale-90 transform transition-all duration-500 ${
-        isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-      }`}
-      style={{
-        transitionDelay: `${index * 80}ms`,
-        willChange: "transform, opacity",
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+const TeamMemberCard = ({ member, setActiveMember }) => (
+  <div className="flex flex-col items-center text-center">
+    <img
+      src={member.image}
+      alt={member.name}
+      loading="lazy"
+      className="h-40 w-40 rounded-full object-cover shadow-sm sm:h-44 sm:w-44"
+    />
+    <h3 className="mt-4 text-lg font-semibold text-gray-800">{member.name}</h3>
+    <p className="text-sm text-gray-700">{member.position}</p>
+    <p className="mt-0.5 text-xs text-gray-600">{member.university}</p>
+    <button
+      className="mt-2 font-semibold text-blue-600 transition-colors hover:text-blue-800"
+      onClick={() => setActiveMember(member)}
     >
-      <div
-        className={`relative rounded-2xl shadow-lg border-2 overflow-hidden transition-all duration-500 ${
-          isHovered
-            ? "scale-105 shadow-2xl border-opacity-100"
-            : "scale-100 border-opacity-0"
-        }`}
-        style={{
-          backgroundColor: bgColor,
-          borderColor: color,
-        }}
-      >
-        <div
-          className="absolute top-4 right-4 px-3 py-1 rounded-full text-white text-xs font-semibold z-30 flex items-center space-x-1"
-          style={{ backgroundColor: color }}
-        >
-          {icon}
-          <span>{label}</span>
-        </div>
+      View profile
+    </button>
+  </div>
+);
 
-        <div className="relative aspect-square overflow-hidden">
-          <img
-            src={frame}
-            alt="frame"
-            className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
-          />
-
-          <img
-            src={member.image}
-            alt={member.name}
-            className="w-full p-6 h-full object-cover transition-transform duration-500 group-hover:scale-110 relative z-0"
-          />
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-
-          <div className="absolute bottom-4 left-4 flex space-x-2 transform translate-y-10 group-hover:translate-y-0 transition-transform duration-300 z-20">
-            {Object.entries(member.social).map(
-              ([platform, link]) =>
-                link && (
-                  <a
-                    key={platform}
-                    href={link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 transform hover:scale-110"
-                    aria-label={platform}
-                  >
-                    {socialIcons[platform]}
-                  </a>
-                )
-            )}
-          </div>
-        </div>
-
-        <div className="p-6">
-          <div className="mb-3">
-            <h3 className="text-xl font-bold text-gray-900 mb-1">
-              {member.name}
-            </h3>
-            <p className="text-sm text-gray-700 flex items-center space-x-1 font-medium">
-              <span style={{ color }}>●</span>
-              <span>{member.position}</span>
-            </p>
-          </div>
-
-          <p className="text-gray-800 text-sm leading-relaxed mb-4 line-clamp-3 font-medium">
-            {member.bio}
-          </p>
-
-          <div className="inline-flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full">
-            <span className="text-xs font-bold text-gray-800">
-              {member.badge}
-            </span>
-          </div>
-
-          <button
-            className="w-full mt-4 py-2 rounded-lg bg-white text-gray-800 font-bold hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 group/btn shadow-sm"
-            onClick={() => setActiveMember(member)}
-          >
-            <span>View Profile</span>
-            <FaShareAlt className="transform group-hover/btn:translate-x-1 transition-transform duration-300" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+const organizerMembers = teamMembers.filter(
+  (member) => member.badge === "Organizer"
+);
+const coreTeamMembers = teamMembers.filter(
+  (member) => member.badge !== "Organizer"
+);
 
 const TeamMembersSection = () => {
   const [activeMember, setActiveMember] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const [teamData, setTeamData] = useState({
-    mentors: [],
-    teamLead: [],
-    teamHeads: [],
-    coreTeam: [],
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchTeamMembers = async () => {
-      try {
-        // Fallback URL added to prevent routing to Vite's dev server (5173) if .env is missing
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-        const response = await fetch(`${backendUrl}/api/team`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        // CRITICAL FIX: Verify the server actually returned JSON to prevent the "Unexpected token '<'" error
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error(
-            `Connection failed. The server at ${backendUrl} returned an HTML page instead of JSON. Make sure your backend is running.`
-          );
-        }
-
-        const result = await response.json();
-
-        if (result.success && Array.isArray(result.data)) {
-          const transformedData = {
-            mentors: [],
-            teamLead: [],
-            teamHeads: [],
-            coreTeam: [],
-          };
-
-          result.data.forEach((member) => {
-            const category = getCategory(member.position);
-
-            const frontendMember = {
-              id: member._id,
-              name: member.name,
-              position: member.position,
-              bio: member.bio,
-              fullBio: member.fullBio,
-              image: member.image || "https://via.placeholder.com/300",
-              badge: member.badge,
-              skills: member.skills,
-              social: {
-                linkedin: member.linkedinUrl || null,
-                github: member.githubUrl || null,
-                twitter: member.twitterUrl || null,
-                instagram: member.instagramUrl || null,
-              },
-            };
-
-            if (transformedData[category]) {
-              transformedData[category].unshift(frontendMember);
-            } else {
-              transformedData.coreTeam.unshift(frontendMember);
-            }
-          });
-
-          setTeamData(transformedData);
-        } else {
-          throw new Error("Invalid data format received from the database");
-        }
-      } catch (err) {
-        console.error("Failed to fetch team members:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-        setIsVisible(true);
-      }
-    };
-
-    fetchTeamMembers();
-  }, []);
 
   const handleOpenModal = (member, category) => {
     setActiveMember(member);
@@ -430,35 +229,8 @@ const TeamMembersSection = () => {
     document.body.style.overflow = "unset";
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-        <FaSpinner className="animate-spin text-4xl text-blue-500 mb-4" />
-        <p className="text-gray-600 font-medium">Loading our amazing team...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
-        <FaExclamationTriangle className="text-4xl text-red-500 mb-4" />
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          Oops! Something went wrong.
-        </h2>
-        <p className="text-gray-600 max-w-lg mb-6">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-        >
-          Try Again
-        </button>
-      </div>
-    );
-  }
-
-  const renderTeamSection = (category, title, icon, description) => {
-    if (!teamData[category] || teamData[category].length === 0) return null;
+  const renderTeamSection = (title, icon, description, members, category) => {
+    if (members.length === 0) return null;
 
     return (
       <div className="mb-16">
@@ -470,17 +242,14 @@ const TeamMembersSection = () => {
           <p className="text-gray-600 max-w-2xl mx-auto">{description}</p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
-          {teamData[category].map((member, index) => (
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-12">
+          {members.map((member) => (
             <div
               key={member.id}
-              className="w-full md:w-[calc(50%-1.5rem)] lg:w-[calc(33.333%-2rem)] max-w-[480px]"
+              className="w-full max-w-[220px] sm:w-[calc(50%-1rem)] sm:max-w-none lg:w-[calc(25%-1.5rem)]"
             >
               <TeamMemberCard
                 member={member}
-                category={category}
-                index={index}
-                isVisible={isVisible}
                 setActiveMember={(m) => handleOpenModal(m, category)}
               />
             </div>
@@ -491,7 +260,10 @@ const TeamMembersSection = () => {
   };
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-white relative min-h-screen">
+    <section
+      id="team-members"
+      className="scroll-mt-24 py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-white relative min-h-screen"
+    >
       {activeMember && (
         <ProfileModal
           member={activeMember}
@@ -515,38 +287,24 @@ const TeamMembersSection = () => {
             </span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Get to know the passionate individuals who make our GDG community
-            thrive. From mentors to core members, each bringing unique skills
-            and energy.
+            Meet the student organizers and core team members building our GDG
+            on Campus community.
           </p>
         </div>
 
         {renderTeamSection(
-          "mentors",
-          "Mentors",
+          "Organizers",
           <FaCrown className="text-yellow-500" />,
-          "Experienced guides who provide direction and mentorship to our community"
+          "Leading GDG on Campus at Quantum University.",
+          organizerMembers,
+          "teamLead"
         )}
-
         {renderTeamSection(
-          "teamLead",
-          "Team Lead",
-          <FaUserTie className="text-red-500" />,
-          "The visionary leader guiding our community towards excellence and innovation"
-        )}
-
-        {renderTeamSection(
-          "teamHeads",
-          "Team Heads",
-          <FaUserGraduate className="text-blue-500" />,
-          "Department heads managing various aspects of our community and events"
-        )}
-
-        {renderTeamSection(
-          "coreTeam",
           "Core Team",
           <FaUsers className="text-green-500" />,
-          "The backbone of our community, working tirelessly to make everything happen"
+          "The team members who help our campus developer community thrive.",
+          coreTeamMembers,
+          "coreTeam"
         )}
       </div>
 
@@ -578,22 +336,6 @@ const TeamMembersSection = () => {
           border-radius: 10px;
         }
 
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        .line-clamp-3 {
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
       `}</style>
     </section>
   );

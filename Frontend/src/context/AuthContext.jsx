@@ -5,12 +5,18 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim();
 
   useEffect(() => {
+    if (!backendUrl) {
+      setLoading(false);
+      return;
+    }
+
     const checkUserLoggedIn = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/user/me`,
+          `${backendUrl}/api/user/me`,
           {
             method: "GET",
             credentials: "include",
@@ -36,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkUserLoggedIn();
-  }, []);
+  }, [backendUrl]);
 
   const login = (userData) => {
     setUser(userData);
@@ -45,12 +51,14 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-    }).catch((error) => {
-      console.error("Logout failed:", error);
-    });
+    if (backendUrl) {
+      fetch(`${backendUrl}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      }).catch((error) => {
+        console.error("Logout failed:", error);
+      });
+    }
     window.location.href = `/`;
   };
 
