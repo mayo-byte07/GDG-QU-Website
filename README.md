@@ -1,118 +1,32 @@
 # GDG-QU Website
 
-The official website for GDG Quantum University (GDG-QU). This repository contains both the Frontend (React + Vite) and Backend (Node.js + Express) codebases.
+The frontend for the official GDG Quantum University (GDG-QU) website, built with React and Vite. This repository contains the frontend only.
 
 ## 🚀 Getting Started
 
-You can set up this project locally for development or deploy it using Docker.
-
-### ⚠️ Security Warning
-
-**NEVER** commit your `.env` files to version control. They should contain sensitive keys and secrets. The `.env` files are ignored by git in this project.
-
----
+You can set up this project locally for development.
 
 ## 🛠️ Local Development Setup
 
-To run the project locally without Docker:
+To run the project locally:
 
 ### Prerequisites
-- Node.js (v18+ recommended)
-- MongoDB (running locally or a cloud instance URL)
+- Node.js and npm
 
-### 1. Backend Setup
-
-1. Navigate to the backend directory:
-   ```bash
-   cd Backend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file:
-   Copy `.env.example` to `.env` and fill in the values.
-   ```bash
-   cp .env.example .env
-   ```
-   *Make sure `MONGO_URI` points to your running MongoDB instance.*
-4. Start the backend:
-   ```bash
-   npm run dev
-   ```
-
-### 2. Frontend Setup
-
-1. Navigate to the frontend directory:
-   ```bash
-   cd Frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file:
-   Copy `.env.sample` to `.env`.
-   ```bash
-   cp .env.sample .env
-   ```
-4. Start the frontend:
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 🐳 Docker Setup (Server/Production)
-
-You can run the entire stack (Frontend, Backend, Nginx) using Docker Compose.
-
-### 1. Application Setup
-
-1. **Clone the repository** to your server.
-2. **Run the Environment Setup Script**:
-   We have provided a script to automatically generate the necessary `.env` files for Docker.
-   ```bash
-   # Make the script executable
-   chmod +x setup_server_env.sh
-
-   # Run the script
-   ./setup_server_env.sh
-   ```
-   *Follow the interactive prompts to enter your database URI, API keys, etc.*
-
-   > **Note:** Since the Docker setup uses Nginx as a reverse proxy, the frontend usually communicates with the backend via `/api`.
-
-### 2. Start the Services
-
-Once the environment variables are set up, start the containers:
+### Start the frontend
 
 ```bash
-docker-compose up -d --build
+npm install
+npm run dev
 ```
-*Use `docker-compose.prod.yml` if you specifically want to run with production configurations.*
 
-### 3. Verify Deployment
-
-- **Frontend**: Accessible at `http://localhost` (or your server IP/Domain).
-- **Backend API**: Accessible at `http://localhost/api` (proxied by Nginx).
-
-### 4. Stopping the Services
-
-To stop the containers:
-```bash
-docker-compose down
-```
+The frontend runs on Vite. To use features that load or change events, team members, contact messages, or account data, set `VITE_BACKEND_URL` in `Frontend/.env` to an API server that provides those endpoints. No backend server is included in this repository.
 
 ---
 
 ## 📂 Project Structure
 
-- **Frontend/**: React application moved to Vite.
-- **Backend/**: Node.js Express API.
-- **nginx/**: Nginx configuration for reverse proxying.
-- **setup_server_env.sh**: Helper script for environment configuration.
-
+- **Frontend/**: React application built with Vite.
 ---
 
 ## 🤝 How to Contribute

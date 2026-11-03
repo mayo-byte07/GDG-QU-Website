@@ -1,14 +1,19 @@
-import React, { use, useEffect } from "react";
+import React from "react";
 import LoginComponent from "../Components/auth/LoginComponent";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../context/AuthContext";
 
-const Login = () => {
+const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim();
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim();
+const githubClientId = import.meta.env.VITE_GITHUB_CLIENT_ID?.trim();
+const authConfigured = Boolean(backendUrl && googleClientId && githubClientId);
+
+const LoginActions = () => {
   const authContext = useAuth();
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (codeResponse) => {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/google`,
+        `${backendUrl}/api/auth/google`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -23,13 +28,11 @@ const Login = () => {
   });
 
   const handleGithubLogin = () => {
-    const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
-
-    const redirectUri = `${import.meta.env.VITE_BACKEND_URL}/api/auth/github`;
+    const redirectUri = `${backendUrl}/api/auth/github`;
 
     const scope = "user:email read:user";
 
-    const githubUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
+    const githubUrl = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}&scope=${scope}`;
 
     window.location.href = githubUrl;
   };
@@ -41,6 +44,23 @@ const Login = () => {
         handleGithubLogin={handleGithubLogin}
       />
     </div>
+  );
+};
+
+const Login = () => {
+  if (!authConfigured) {
+    return (
+      <LoginComponent
+        authUnavailable
+        unavailableMessage="Sign-in is unavailable because this frontend-only version has no authentication API configured."
+      />
+    );
+  }
+
+  return (
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <LoginActions />
+    </GoogleOAuthProvider>
   );
 };
 

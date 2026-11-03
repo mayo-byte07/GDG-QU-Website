@@ -54,7 +54,7 @@ const DOMAINS = [
 ];
 
 const STATS = [
-  { number: "15", label: "Core Members", color: "text-blue-600" },
+  { number: "9", label: "Core Members", color: "text-blue-600" },
   { number: "100%", label: "Committed", color: "text-green-600" },
   { number: "24/7", label: "Dedication", color: "text-red-500" },
 ];
@@ -86,6 +86,38 @@ const QUOTES = [
     hoverClass: "group-hover:text-yellow-500",
   },
 ];
+
+const scrollToMembers = () => {
+  const membersSection = document.getElementById("team-members");
+  if (!membersSection) return;
+
+  const startY = window.scrollY;
+  const targetY =
+    membersSection.getBoundingClientRect().top + startY - 96;
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    window.scrollTo(0, targetY);
+    return;
+  }
+
+  const duration = 1200;
+  let animationStart;
+
+  const animateScroll = (timestamp) => {
+    animationStart ??= timestamp;
+    const progress = Math.min((timestamp - animationStart) / duration, 1);
+    const easedProgress =
+      progress < 0.5
+        ? 4 * progress ** 3
+        : 1 - ((-2 * progress + 2) ** 3) / 2;
+
+    window.scrollTo(0, startY + (targetY - startY) * easedProgress);
+
+    if (progress < 1) requestAnimationFrame(animateScroll);
+  };
+
+  requestAnimationFrame(animateScroll);
+};
 
 const GDGTeamWelcome = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -244,7 +276,11 @@ const GDGTeamWelcome = () => {
             </div>
 
             <div className="flex flex-wrap gap-4 pt-4">
-              <button className="group relative px-6 py-3 rounded-xl bg-[#202124] text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 overflow-hidden">
+              <button
+                type="button"
+                onClick={scrollToMembers}
+                className="group relative px-6 py-3 rounded-xl bg-[#202124] text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 overflow-hidden"
+              >
                 <span className="relative z-10 flex items-center gap-2">
                   <FaHandshake /> View All Members
                 </span>
@@ -343,7 +379,7 @@ const GDGTeamWelcome = () => {
                   </div>
                   <div className="flex gap-2 mt-1">
                     <span className="text-yellow-300">
-                      15 Active Contributors
+                      9 Active Contributors
                     </span>
                   </div>
                 </div>

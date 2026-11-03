@@ -15,13 +15,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix Backend\" \"npm run dev --prefix Frontend\"",
-    "dev:backend": "npm run dev --prefix Backend",
-    "dev:frontend": "npm run dev --prefix Frontend",
-    "build": "npm run build --prefix Frontend && npm run build --prefix Backend",
-    "docker:push": "docker-compose build && docker-compose push"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+    "dev": "npm run dev --prefix Frontend",
+    "build": "npm run build --prefix Frontend"
   }
 }
