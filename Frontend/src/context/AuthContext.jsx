@@ -10,9 +10,9 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (isSupabaseConfigured) {
-      supabase.auth.getUser().then(({ data, error }) => {
+      supabase.auth.getSession().then(({ data, error }) => {
         if (error) console.error("Supabase session check failed:", error);
-        setUser(data.user ? normalizeSupabaseUser(data.user) : null);
+        setUser(data.session?.user ? normalizeSupabaseUser(data.session.user) : null);
         setLoading(false);
       });
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {

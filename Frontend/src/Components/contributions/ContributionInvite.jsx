@@ -167,7 +167,7 @@ const ContributionHero = () => {
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4 pt-4">
               <a
-                href="https://github.com"
+                href="https://github.com/GDG-QU"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative inline-flex items-center gap-3 bg-[#24292e] text-white px-8 py-4 rounded-2xl font-bold text-lg overflow-hidden shadow-xl transition-all hover:scale-105 hover:shadow-2xl"

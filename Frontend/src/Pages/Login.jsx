@@ -9,9 +9,13 @@ const Login = () => {
 
   const signIn = async (provider) => {
     setError("");
+    const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.trim();
+    const redirectOrigin = import.meta.env.PROD
+      ? (configuredSiteUrl || "https://gdg-qu-website.vercel.app")
+      : window.location.origin;
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/profile` },
+      options: { redirectTo: `${redirectOrigin.replace(/\/$/, "")}/auth/callback` },
     });
     if (authError) setError(authError.message);
   };
