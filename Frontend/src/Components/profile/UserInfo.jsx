@@ -15,6 +15,7 @@ import {
   FaShapes,
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
+import { supabase } from "../../lib/supabase";
 
 const ProfileSection = () => {
   const [user, setUser] = useState(null);
@@ -34,6 +35,18 @@ const ProfileSection = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!import.meta.env.VITE_BACKEND_URL?.trim()) {
+        const profile = authContext.user;
+        setUser(profile);
+        setFormData({
+          realName: profile?.realName || profile?.name || "",
+          qid: profile?.user_metadata?.qid || "",
+          course: profile?.user_metadata?.course || "",
+          branch: profile?.user_metadata?.branch || "",
+        });
+        setLoading(false);
+        return;
+      }
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/user/me`,
         {
@@ -53,7 +66,7 @@ const ProfileSection = () => {
       setLoading(false);
     };
     fetchUserData();
-  }, []);
+  }, [authContext.user]);
 
   const validate = () => {
     const newErrors = {};
@@ -85,6 +98,15 @@ const ProfileSection = () => {
     if (!validate()) return;
     setIsSaving(true);
     try {
+      if (!import.meta.env.VITE_BACKEND_URL?.trim()) {
+        const { data, error } = await supabase.auth.updateUser({
+          data: { ...formData, full_name: formData.realName },
+        });
+        if (error) throw error;
+        setUser({ ...data.user, ...formData, name: formData.realName, photo: data.user.user_metadata?.avatar_url });
+        setIsEditing(false);
+        return;
+      }
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/user/update`,
         {

@@ -1,66 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LoginComponent from "../Components/auth/LoginComponent";
-import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../context/AuthContext";
-
-const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim();
-const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim();
-const githubClientId = import.meta.env.VITE_GITHUB_CLIENT_ID?.trim();
-const authConfigured = Boolean(backendUrl && googleClientId && githubClientId);
-
-const LoginActions = () => {
-  const authContext = useAuth();
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (codeResponse) => {
-      const response = await fetch(
-        `${backendUrl}/api/auth/google`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code: codeResponse.code }),
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-      authContext.login(data.user);
-    },
-    flow: "auth-code",
-  });
-
-  const handleGithubLogin = () => {
-    const redirectUri = `${backendUrl}/api/auth/github`;
-
-    const scope = "user:email read:user";
-
-    const githubUrl = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}&scope=${scope}`;
-
-    window.location.href = githubUrl;
-  };
-
-  return (
-    <div>
-      <LoginComponent
-        handleGoogleLogin={handleGoogleLogin}
-        handleGithubLogin={handleGithubLogin}
-      />
-    </div>
-  );
-};
+import { isSupabaseConfigured, supabase } from "../lib/supabase";
 
 const Login = () => {
-  if (!authConfigured) {
-    return (
-      <LoginComponent
-        authUnavailable
-        unavailableMessage="Sign-in is unavailable because this frontend-only version has no authentication API configured."
-      />
-    );
-  }
+  const { user } = useAuth();
+  const [error, setError] = useState("");
+
+  const signIn = async (provider) => {
+    setError("");
+    const { error: authError } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/profile` },
+    });
+    if (authError) setError(authError.message);
+  };
+
+  useEffect(() => {
+    if (user) window.location.replace("/profile");
+  }, [user]);
 
   return (
-    <GoogleOAuthProvider clientId={googleClientId}>
-      <LoginActions />
-    </GoogleOAuthProvider>
+    <LoginComponent
+      handleGoogleLogin={() => signIn("google")}
+      handleGithubLogin={() => signIn("github")}
+      authUnavailable={!isSupabaseConfigured}
+      unavailableMessage="Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to Frontend/.env.local to enable sign-in."
+      errorMessage={error}
+    />
   );
 };
 
