@@ -12,6 +12,7 @@ const LoginComponent = ({
   handleGithubLogin,
   authUnavailable = false,
   unavailableMessage,
+  errorMessage,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeProvider, setActiveProvider] = useState(null);
@@ -181,6 +182,11 @@ const LoginComponent = ({
               className="mt-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-900"
             >
               {unavailableMessage}
+            </p>
+          )}
+          {errorMessage && (
+            <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-800">
+              {errorMessage}
             </p>
           )}
 

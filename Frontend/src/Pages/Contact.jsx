@@ -191,7 +191,7 @@ const ContactPage = () => {
                         </div>
                         <div className="ml-4">
                             <p className="text-xs font-bold text-gray-400 uppercase">Email Us</p>
-                            <p className="text-gray-900 font-medium">dsc@quantumuniversity.edu.in</p>
+                            <p className="text-gray-900 font-medium">gdsc@quantumuniversity.edu.in</p>
                         </div>
                     </div>
 

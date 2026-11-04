@@ -22,6 +22,8 @@ npm run dev
 
 The frontend runs on Vite. To use features that load or change events, team members, contact messages, or account data, set `VITE_BACKEND_URL` in `Frontend/.env` to an API server that provides those endpoints. No backend server is included in this repository.
 
+The Supabase client is configured with `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in `Frontend/.env`. Use the publishable key in frontend configuration; never put a Supabase secret key in a `VITE_*` variable or commit it to the repository. Add these same two variables to the Vercel project's environment settings before deploying.
+
 ---
 
 ## 📂 Project Structure

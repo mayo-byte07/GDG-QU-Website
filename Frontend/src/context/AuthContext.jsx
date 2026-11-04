@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { isSupabaseConfigured, supabase } from "../lib/supabase";
 
 const AuthContext = createContext();
 
@@ -8,6 +9,19 @@ export const AuthProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim();
 
   useEffect(() => {
+    if (isSupabaseConfigured) {
+      supabase.auth.getUser().then(({ data, error }) => {
+        if (error) console.error("Supabase session check failed:", error);
+        setUser(data.user ? normalizeSupabaseUser(data.user) : null);
+        setLoading(false);
+      });
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ? normalizeSupabaseUser(session.user) : null);
+        setLoading(false);
+      });
+      return () => subscription.unsubscribe();
+    }
+
     if (!backendUrl) {
       setLoading(false);
       return;
@@ -44,13 +58,13 @@ export const AuthProvider = ({ children }) => {
     checkUserLoggedIn();
   }, [backendUrl]);
 
-  const login = (userData) => {
-    setUser(userData);
-    window.location.href = `/profile`;
-  };
-
   const logout = () => {
     setUser(null);
+    if (isSupabaseConfigured) {
+      supabase.auth.signOut().then(({ error }) => {
+        if (error) console.error("Supabase logout failed:", error);
+      });
+    }
     if (backendUrl) {
       fetch(`${backendUrl}/api/auth/logout`, {
         method: "POST",
@@ -63,10 +77,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+const normalizeSupabaseUser = (user) => {
+  const metadata = user.user_metadata || {};
+  const name = metadata.full_name || metadata.name || metadata.user_name || user.email || "User";
+  return {
+    ...user,
+    name,
+    realName: name,
+    email: user.email,
+    photo: metadata.avatar_url || metadata.picture || null,
+  };
 };
 
 export const useAuth = () => {
