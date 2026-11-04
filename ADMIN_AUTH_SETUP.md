@@ -1,6 +1,6 @@
 # Admin sign-in setup
 
-The admin authorization endpoint is a Vercel serverless function at `/api/user/isAdmin`. It verifies the Supabase access token with Supabase Auth and compares the verified account email with the server-only `ADMIN_EMAILS` allowlist. It does not trust editable user metadata and does not expose a Supabase secret key.
+The admin authorization endpoint is a Vercel serverless function at `/api/user/isAdmin`. It uses `@supabase/server` to validate the incoming Supabase bearer token, then compares the verified account email with the server-only `ADMIN_EMAILS` allowlist. It does not trust editable user metadata. The server runtime must be Node.js 22 or newer.
 
 ## Vercel setup
 
@@ -10,12 +10,14 @@ In the Vercel project settings, set **Root Directory** to the repository root (t
 | --- | --- |
 | `SUPABASE_URL` | The Supabase project URL, such as `https://<project-ref>.supabase.co` |
 | `SUPABASE_PUBLISHABLE_KEY` | The Supabase publishable key (legacy anon key also works) |
+| `SUPABASE_SECRET_KEY` | Supabase secret key, server-side only; copy it directly from Supabase API Keys settings into Vercel |
+| `SUPABASE_JWKS_URL` | `https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json` |
 | `ADMIN_EMAILS` | Comma-separated sign-in email(s) allowed into the admin dashboard |
 | `VITE_SUPABASE_URL` | Same Supabase project URL, for the browser client |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Same publishable key, for the browser client |
 | `VITE_SITE_URL` | Stable production site origin, e.g. `https://gdg-qu-website.vercel.app` |
 
-Do not set a service-role/secret key in a `VITE_*` variable. `ADMIN_EMAILS` is server-only and must not use the `VITE_` prefix.
+Do not set a secret key in a `VITE_*` variable, commit it, or paste it into chat. The value pasted in the chat was masked, so enter the complete key directly in Vercel. `ADMIN_EMAILS` is server-only and must not use the `VITE_` prefix. The server auth package uses the secret key only on the server; it does not need to be shared with the browser.
 
 ## Supabase redirect setup
 

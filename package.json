@@ -14,8 +14,14 @@
   "author": "",
   "type": "module",
   "main": "index.js",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "npm run dev --prefix Frontend",
     "build": "npm run build --prefix Frontend"
+  },
+  "dependencies": {
+    "@supabase/server": "^1.9.2"
   }
 }

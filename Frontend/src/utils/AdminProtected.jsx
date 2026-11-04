@@ -17,7 +17,10 @@ const AdminProtected = ({ children }) => {
 
       try {
         const response = await fetch("/api/user/isAdmin", {
-          headers: { Authorization: `Bearer ${data.session.access_token}` },
+          headers: {
+            Authorization: `Bearer ${data.session.access_token}`,
+            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
         });
         if (!response.ok) throw new Error("Admin authorization service is unavailable");
         const result = await response.json();

@@ -1,3 +1,5 @@
+import { verifyAuth } from "@supabase/server/core";
+
 const json = (res, status, body) => {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json");
@@ -10,34 +12,27 @@ export default async function isAdmin(req, res) {
     return json(res, 405, { error: "Method not allowed" });
   }
 
-  const authorization = req.headers.authorization || "";
-  const accessToken = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const publishableKey =
-    process.env.SUPABASE_PUBLISHABLE_KEY ||
-    process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
-  if (!supabaseUrl || !publishableKey) {
-    return json(res, 500, { error: "Supabase server configuration is missing" });
-  }
-  if (!accessToken) return json(res, 401, { error: "Sign-in required" });
+  const protocol = req.headers["x-forwarded-proto"] || "https";
+  const host = req.headers.host || "localhost";
+  const headers = new Headers();
+  if (req.headers.authorization) headers.set("Authorization", req.headers.authorization);
+  if (req.headers.apikey) headers.set("apikey", req.headers.apikey);
+  const request = new Request(`${protocol}://${host}${req.url || "/api/user/isAdmin"}`, {
+    method: "GET",
+    headers,
+  });
 
   try {
-    const userResponse = await fetch(`${supabaseUrl.replace(/\/$/, "")}/auth/v1/user`, {
-      headers: {
-        apikey: publishableKey,
-        Authorization: `Bearer ${accessToken}`,
-      },
+    const { data: auth, error } = await verifyAuth(request, {
+      auth: "user",
     });
+    if (error) return json(res, error.status || 401, { error: error.message });
 
-    if (!userResponse.ok) return json(res, 401, { error: "Invalid or expired session" });
-
-    const user = await userResponse.json();
     const allowedEmails = (process.env.ADMIN_EMAILS || "")
       .split(",")
       .map((email) => email.trim().toLowerCase())
       .filter(Boolean);
-    const email = user.email?.trim().toLowerCase();
+    const email = auth.userClaims?.email?.trim().toLowerCase();
 
     return json(res, 200, {
       data: { isAdmin: Boolean(email && allowedEmails.includes(email)) },
