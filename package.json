@@ -18,7 +18,7 @@
     "node": "22.x"
   },
   "scripts": {
-    "dev": "npm run dev --prefix Frontend",
+    "dev": "node scripts/dev.js",
     "build": "npm run build --prefix Frontend"
   },
   "dependencies": {

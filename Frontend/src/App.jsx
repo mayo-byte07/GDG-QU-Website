@@ -10,7 +10,6 @@ import Profile from "./Pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import Protected from "./utils/Protected";
 import ContactPage from "./Pages/Contact";
-import AuthCallback from "./Pages/AuthCallback";
 
 //TODO: Modularize the whole thing later
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
@@ -31,7 +30,6 @@ function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/events" element={<Event />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/contributions" element={<Contributions />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route
