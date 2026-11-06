@@ -29,6 +29,15 @@ const Login = () => {
           apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
       });
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+        throw new Error(
+          isLocal
+            ? "The local admin API is not running. Stop the current dev server and run `npm run dev` from the repository root."
+            : "The admin API is not deployed at /api/user/isAdmin. In Vercel, set Root Directory to the repository root (not Frontend), then redeploy."
+        );
+      }
       const result = await response.json();
       if (!response.ok) {
         throw new Error(result.error || "Admin access could not be checked. Confirm the backend and database are configured.");

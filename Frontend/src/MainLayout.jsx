@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Navbar from "./Components/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
 import Footer from "./Components/FooterSection";
+import NexoraBadge from "./Components/NexoraBadge";
 
 const MainLayout = () => {
   // scroll to top on route change
@@ -13,6 +14,7 @@ const MainLayout = () => {
   return (
     <div>
       <Navbar />
+      <NexoraBadge />
       <div
         style={{ height: `var(--navbar-height, 70px)` }}
         className="w-full"

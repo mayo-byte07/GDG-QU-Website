@@ -1,0 +1,73 @@
+/* Compact image badge for the NEXORA 2027 hackathon. */
+.nexora-badge {
+  position: fixed;
+  top: calc(var(--navbar-height, 70px) + 2px);
+  right: 0;
+  z-index: 60;
+  display: block;
+  width: clamp(180px, 18vw, 300px);
+  max-width: min(88vw, 300px);
+  container-type: inline-size;
+  text-decoration: none;
+  transform-origin: right center;
+  animation: nexora-float 4.8s ease-in-out infinite;
+  transition: transform 250ms ease, filter 250ms ease;
+}
+
+.nexora-badge__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.nexora-badge__x-flicker {
+  position: absolute;
+  top: 42.5%;
+  left: 35.3%;
+  z-index: 1;
+  display: grid;
+  width: 6.3%;
+  height: 16%;
+  place-items: center;
+  color: transparent;
+  font: italic 900 15px/1 system-ui, sans-serif;
+  font-size: 5.4cqw;
+  -webkit-text-stroke: 0.7px rgba(255, 255, 255, 0.92);
+  text-shadow: 0 0 5px rgba(34, 211, 238, 0.8);
+  pointer-events: none;
+  animation: nexora-x-flicker 3.2s steps(2, end) infinite;
+}
+
+.nexora-badge:hover {
+  transform: none;
+  filter: none;
+}
+
+.nexora-badge:focus-visible {
+  outline: 2px solid #35e5f2;
+  outline-offset: 3px;
+  border-radius: 16px;
+}
+
+@keyframes nexora-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -2px; }
+}
+
+@keyframes nexora-x-flicker {
+  0%, 84%, 88%, 92%, 100% { opacity: 0; }
+  85%, 91% { opacity: 1; }
+  87%, 89% { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nexora-badge {
+    animation: none;
+    transition: none;
+  }
+
+  .nexora-badge__x-flicker {
+    animation: none;
+    opacity: 0;
+  }
+}
