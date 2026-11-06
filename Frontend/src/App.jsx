@@ -1,22 +1,13 @@
 import Home from "./Pages/Home";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Team from "./Pages/Team";
 import Event from "./Pages/Event";
 import MainLayout from "./MainLayout";
-import AdminLayout from "./Pages/Admin/AdminLayout";
-import Login from "./Pages/Login";
 import Contributions from "./Pages/Contributions";
 import Profile from "./Pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import Protected from "./utils/Protected";
 import ContactPage from "./Pages/Contact";
-
-//TODO: Modularize the whole thing later
-import AdminDashboard from "./Pages/Admin/AdminDashboard";
-import AdminEvent from "./Pages/Admin/AdminEvent";
-import AdminTeamPage from "./Pages/Admin/AdminTeam";
-import AdminContactPage from "./Pages/Admin/AdminContactPage";
-import AdminProtected from "./utils/AdminProtected";
 
 //TODO: Modularize the whole thing later
 function App() {
@@ -29,7 +20,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/team" element={<Team />} />
             <Route path="/events" element={<Event />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Navigate to="/" replace />} />
             <Route path="/contributions" element={<Contributions />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route
@@ -42,20 +33,8 @@ function App() {
             />
           </Route>
 
-          {/* Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <AdminProtected>
-                <AdminLayout />
-              </AdminProtected>
-            }
-          >
-            <Route index element={<AdminDashboard />} />
-            <Route path="event" element={<AdminEvent />} />
-            <Route path="team" element={<AdminTeamPage />} />
-            <Route path="contact" element={<AdminContactPage />} />
-          </Route>
+          {/* Admin area removed; keep stale admin URLs out of the public site. */}
+          <Route path="/admin/*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

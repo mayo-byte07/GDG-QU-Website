@@ -37,7 +37,7 @@ const JoinCommunity = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
           {/* WhatsApp Button */}
           <a
-            href="https://chat.whatsapp.com/ITrLWCTUV9lEshoRxOwixf"
+            href="https://chat.whatsapp.com/EKmyimSrTk7Cv4icay8Puh"
             target="_blank"
             rel="noreferrer"
             className="group relative w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#25D366] text-white rounded-full font-bold text-lg shadow-lg shadow-green-500/20 hover:shadow-green-500/40 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
@@ -61,7 +61,7 @@ const JoinCommunity = () => {
         </div>
 
         <p className="mt-8 text-sm text-gray-500">
-          Join 500+ developers already in the community.
+          Join 5000+ developers already in the community.
         </p>
       </div>
 
