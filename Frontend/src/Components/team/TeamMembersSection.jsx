@@ -97,7 +97,7 @@ const ProfileModal = ({ member, category, onClose }) => {
                 <img
                   src={member.image}
                   alt={member.name}
-                  className="relative w-44 h-44 object-cover rounded-3xl shadow-2xl border-4 border-white"
+                  className="relative h-44 w-44 rounded-full object-cover shadow-xl"
                 />
               </div>
 

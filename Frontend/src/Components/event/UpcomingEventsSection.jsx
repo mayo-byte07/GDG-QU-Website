@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { tenureEvents2026_27 } from "../../data/tenureEvents2026_27";
+import { tenureEvents2025_26 } from "../../data/tenureEvents2025_26";
 import {
   FaCalendarAlt,
   FaClock,
@@ -64,13 +66,23 @@ const formatTime = (date) =>
     hour: "2-digit",
     minute: "2-digit",
   });
+const formatLongDate = (date) =>
+  new Date(date).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
 // --- MODAL COMPONENT ---
 const EventModal = ({ event, isOpen, onClose, onRegisterSuccess }) => {
+  const [isRegistering, setIsRegistering] = useState(false);
   if (!isOpen || !event) return null;
   const isUpcoming = new Date(event.date_from) > new Date();
   const themeColor = getEventTypeColor(event.type);
-  const [isRegistering, setIsRegistering] = useState(false);
+  const dateLabel = event.date_to
+    ? `${formatLongDate(event.date_from)} – ${formatLongDate(event.date_to)}`
+    : formatLongDate(event.date_from);
 
   const handleRegistration = async () => {
     setIsRegistering(true);
@@ -107,106 +119,172 @@ const EventModal = ({ event, isOpen, onClose, onRegisterSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
+      <button
+        type="button"
+        aria-label="Close event details"
+        className="absolute inset-0 cursor-default bg-slate-950/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-scale-up max-h-[90vh] flex flex-col">
-        {/* Header Image */}
-        <div className="relative h-56 flex-shrink-0 bg-gray-200">
-          <img
-            src={event.cover}
-            alt={event.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 bg-black/30 hover:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all z-10"
-          >
-            <FaTimes />
-          </button>
-          <div className="absolute bottom-6 left-6 right-6 text-white">
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md border border-white/20 mb-3 inline-block">
-              {event.type}
-            </span>
-            <h2 className="text-3xl font-bold leading-tight">{event.title}</h2>
-          </div>
-        </div>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="event-modal-title"
+        className="animate-scale-up relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl"
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close event details"
+          className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-white text-slate-500 shadow-md transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        >
+          <FaTimes />
+        </button>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Col */}
-            <div className="lg:col-span-2 space-y-6">
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <FaInfoCircle style={{ color: themeColor }} /> About
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {event.description}
-                </p>
+        <div className="custom-scrollbar flex-1 overflow-y-auto p-5 sm:p-8">
+          <header className="mb-7 pr-12">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <span
+                className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide text-white"
+                style={{ backgroundColor: themeColor }}
+              >
+                {event.type || "Event"}
+              </span>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                {isUpcoming ? "Upcoming event" : "Past event"}
+              </span>
+              {event.tenure && (
+                <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                  Tenure {event.tenure}
+                </span>
+              )}
+            </div>
+            <h2
+              id="event-modal-title"
+              className="text-2xl font-bold leading-tight text-slate-900 sm:text-3xl"
+            >
+              {event.title}
+            </h2>
+          </header>
+
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-10">
+            <div className="space-y-7">
+              <div className="flex justify-center md:justify-start">
+                <div className="h-48 w-48 overflow-hidden rounded-full bg-slate-50 ring-4 ring-slate-100 shadow-lg sm:h-56 sm:w-56">
+                  <img
+                    src={event.cover}
+                    alt={`${event.title} poster`}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
               </div>
-              {!isUpcoming && event.photos && event.photos.length > 0 && (
-                <div className="pt-4 border-t border-gray-100">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <FaImages style={{ color: themeColor }} /> Event Gallery
+
+              <section>
+                <h3 className="mb-2 flex items-center gap-2 text-lg font-bold text-slate-900">
+                  <FaInfoCircle style={{ color: themeColor }} /> About this event
+                </h3>
+                <p className="text-sm leading-6 text-slate-600 sm:text-base">
+                  {event.description || "More event information will be shared soon."}
+                </p>
+              </section>
+
+              {!isUpcoming && event.photos?.length > 0 && (
+                <section className="border-t border-slate-100 pt-5">
+                  <h3 className="mb-3 flex items-center gap-2 text-lg font-bold text-slate-900">
+                    <FaImages style={{ color: themeColor }} /> Event gallery
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {event.photos.map((photo, idx) => (
                       <div
                         key={idx}
-                        className="aspect-square rounded-lg overflow-hidden shadow-sm bg-gray-100"
+                        className="aspect-square overflow-hidden rounded-xl bg-slate-100"
                       >
                         <img
                           src={photo}
-                          alt="Gallery"
-                          className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                          alt={`${event.title} gallery image ${idx + 1}`}
+                          className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                         />
                       </div>
                     ))}
                   </div>
-                </div>
+                </section>
               )}
             </div>
 
-            {/* Right Col */}
-            <div className="space-y-4">
-              <div className="p-5 bg-gray-50 rounded-xl border border-gray-100 space-y-4">
-                <div>
-                  <div className="text-xs font-bold text-gray-400 uppercase">
-                    Speakers
-                  </div>
-                  <div className="font-medium text-gray-800">
-                    {event.speakers.join(", ")}
+            <aside className="h-fit rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
+              <h3 className="mb-5 text-sm font-bold uppercase tracking-wider text-slate-500">
+                Event details
+              </h3>
+              <dl className="space-y-5">
+                <div className="flex gap-3">
+                  <FaCalendarAlt className="mt-1 shrink-0 text-blue-600" />
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Date and time
+                    </dt>
+                    <dd className="mt-1 font-medium leading-6 text-slate-800">
+                      {dateLabel}
+                      <br />
+                      {formatTime(event.date_from)}
+                      {event.date_to && ` – ${formatTime(event.date_to)}`}
+                    </dd>
                   </div>
                 </div>
-                <div>
-                  <div className="text-xs font-bold text-gray-400 uppercase">
-                    Venue
+                <div className="flex gap-3">
+                  <FaMapMarkerAlt className="mt-1 shrink-0 text-red-500" />
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Venue
+                    </dt>
+                    <dd className="mt-1 font-medium leading-6 text-slate-800">
+                      {event.venue || "Venue to be announced"}
+                    </dd>
                   </div>
-                  <div className="font-medium text-gray-800">{event.venue}</div>
                 </div>
+                <div className="flex gap-3">
+                  <FaUser className="mt-1 shrink-0 text-green-600" />
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Speakers and hosts
+                    </dt>
+                    <dd className="mt-1 font-medium leading-6 text-slate-800">
+                      {(event.speakers || []).join(", ") ||
+                        "GDG on Campus Quantum University"}
+                    </dd>
+                  </div>
+                </div>
+              </dl>
 
+              <div className="mt-7 space-y-3 border-t border-slate-200 pt-5">
                 {isUpcoming &&
                   (event.isEnrolled ? (
-                    <div className="w-full py-3 text-center bg-green-100 text-green-700 font-bold rounded-lg border border-green-200 flex items-center justify-center gap-2 cursor-default">
-                      <FaCheckCircle /> You are Registered
+                    <div className="flex w-full items-center justify-center gap-2 rounded-xl border border-green-200 bg-green-50 py-3 font-bold text-green-700">
+                      <FaCheckCircle /> You are registered
                     </div>
                   ) : (
                     <button
                       onClick={handleRegistration}
                       disabled={isRegistering}
-                      className="w-full py-3 text-center text-white font-bold rounded-lg shadow-lg hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl py-3 font-bold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-70"
                       style={{ backgroundColor: themeColor }}
                     >
                       {isRegistering && <FaSpinner className="animate-spin" />}
-                      {isRegistering ? "Registering..." : "Register Now"}
+                      {isRegistering ? "Registering…" : "Register now"}
                     </button>
                   ))}
+                {event.gdgUrl && (
+                  <a
+                    href={event.gdgUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-white py-3 font-bold text-blue-700 transition hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  >
+                    View on GDG Community
+                    <FaExternalLinkAlt className="text-sm" />
+                  </a>
+                )}
               </div>
-            </div>
+            </aside>
           </div>
         </div>
       </div>
@@ -245,17 +323,61 @@ const EventCard = ({ event, onClick }) => {
     Math.round((event.participantCount / event.maxParticipants) * 100)
   );
 
+  if (event.source === "gdg-community") {
+    const communityDate = new Date(event.date_from).toLocaleDateString(
+      "en-US",
+      { month: "short", day: "numeric", year: "numeric", timeZone: "Asia/Kolkata" }
+    );
+
+    return (
+      <article
+        onClick={() => onClick(event)}
+        className="group flex flex-[0_0_88%] snap-start cursor-pointer flex-col items-center px-2 text-center md:flex-[0_0_47%] xl:flex-[0_0_calc(25%_-_18px)]"
+      >
+        <div className="aspect-square w-full max-w-[180px] overflow-hidden rounded-full bg-white">
+          <img
+            src={event.cover}
+            alt={`${event.title} event poster`}
+            className="h-full w-full rounded-full object-cover"
+          />
+        </div>
+        <div className="mt-4 text-base font-normal text-[#686868] md:text-lg">
+          {communityDate}
+        </div>
+        <div className="mt-2 text-base font-semibold text-black md:text-lg">
+          {event.registrationLabel || "Free registration"}
+        </div>
+        <a
+          href={event.gdgUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(clickEvent) => clickEvent.stopPropagation()}
+          className="mt-3 text-lg leading-tight text-[#686868] underline decoration-1 underline-offset-2 transition-colors hover:text-blue-700 md:text-xl"
+        >
+          {event.title}
+        </a>
+        <div className="mt-3 text-base leading-tight text-[#686868] md:text-lg">
+          {event.communityName || "GDG on Campus Quantum University - Roorkee, India"}
+        </div>
+      </article>
+    );
+  }
+
   return (
     <div
       onClick={() => onClick(event)}
-      className="group relative bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl cursor-pointer h-full flex flex-col"
+      className="group relative flex-[0_0_88%] snap-start h-full cursor-pointer flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:scale-105 hover:shadow-2xl md:flex-[0_0_47%] xl:flex-[0_0_31%]"
     >
       <div className="relative h-48 overflow-hidden flex-shrink-0 bg-gray-200">
         <img
           src={event.cover}
           alt={event.title}
           className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${
-            !isUpcoming ? "grayscale-[0.8] group-hover:grayscale-0" : ""
+            !isUpcoming && event.source !== "gdg-community"
+              ? "grayscale-[0.8] group-hover:grayscale-0"
+            : event.source === "gdg-community"
+              ? "object-contain bg-white"
+              : ""
           }`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -287,10 +409,16 @@ const EventCard = ({ event, onClick }) => {
           {event.title}
         </h3>
 
+        {event.tenure && (
+          <span className="w-fit mb-3 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+            Tenure {event.tenure}
+          </span>
+        )}
+
         <div className="flex items-center space-x-2 mb-3">
           <FaUser className="text-gray-400 text-sm" />
           <span className="text-sm text-gray-600 truncate">
-            By {event.speakers[0]}
+            By {(event.speakers || ["GDG on Campus Quantum University"])[0]}
           </span>
         </div>
 
@@ -347,12 +475,25 @@ const EventCard = ({ event, onClick }) => {
             isUpcoming && event.isEnrolled
               ? {}
               : {
-                  backgroundColor: isUpcoming ? themeColor : "#e5e7eb",
-                  color: isUpcoming ? "white" : "#6b7280",
+                  backgroundColor:
+                    event.source === "gdg-community"
+                      ? colors.blue
+                      : isUpcoming
+                        ? themeColor
+                        : "#e5e7eb",
+                  color:
+                    event.source === "gdg-community" || isUpcoming
+                      ? "white"
+                      : "#6b7280",
                 }
           }
         >
-          {isUpcoming ? (
+          {event.source === "gdg-community" ? (
+            <>
+              <span>Event details</span>
+              <FaArrowRight className="text-sm" />
+            </>
+          ) : isUpcoming ? (
             event.isEnrolled ? (
               <>
                 <span>Registered</span>
@@ -481,7 +622,11 @@ const EventsSection = () => {
 
   const fetchAllEvents = async () => {
     setIsLoading(true);
+    let backendEvents = [];
     try {
+      if (!import.meta.env.VITE_BACKEND_URL) {
+        throw new Error("VITE_BACKEND_URL is not configured");
+      }
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/event?limit=1000`,
         {
@@ -490,13 +635,21 @@ const EventsSection = () => {
           credentials: "include",
         }
       );
+      if (!response.ok) throw new Error(`Event API returned ${response.status}`);
       const data = await response.json();
-      const fullList = data.data || [];
-      setAllEvents(fullList);
-      setTotalPages(Math.ceil(fullList.length / ITEMS_PER_PAGE));
+      backendEvents = Array.isArray(data.data) ? data.data : [];
     } catch (error) {
       console.error("Failed to fetch events:", error);
     } finally {
+      const eventMap = new Map();
+      [...backendEvents, ...tenureEvents2026_27].forEach((event) => {
+        eventMap.set(event.gdgUrl || event._id, event);
+      });
+      const fullList = [...eventMap.values()].sort(
+        (a, b) => new Date(b.date_from) - new Date(a.date_from)
+      );
+      setAllEvents(fullList);
+      setTotalPages(Math.max(1, Math.ceil(fullList.length / ITEMS_PER_PAGE)));
       setIsLoading(false);
     }
   };
@@ -539,32 +692,34 @@ const EventsSection = () => {
   };
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <>
+      <section className="bg-gray-50 px-4 py-20 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-6xl">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center space-x-2 bg-green-50 px-6 py-3 rounded-full border border-green-200 mb-6">
             <FaCalendarAlt className="text-green-500" />
             <span className="text-lg font-semibold text-green-600">
-              Community Calendar
+              Tenure 2026–27 Events
             </span>
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             Discover{" "}
             <span className="bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
-              Amazing Events
+              Tenure Events
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Browse our upcoming workshops or check out the gallery from past
-            sessions.
+            Explore events from the GDG on Campus Quantum University 2026–27 tenure.
           </p>
         </div>
 
         {/* Events Grid */}
         <div
           id="events-grid"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 min-h-[600px]"
+          className={`mb-8 flex min-h-[400px] snap-x snap-mandatory gap-6 overflow-x-auto pb-4 ${
+            displayedEvents.length <= 3 ? "xl:justify-center" : ""
+          }`}
         >
           {isLoading
             ? Array.from({ length: 6 }).map((_, i) => (
@@ -594,7 +749,29 @@ const EventsSection = () => {
             isLoading={isLoading}
           />
         )}
+        <div className="mt-14 border-t border-gray-200 pt-10">
+          <div className="mb-10 text-center">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-5 py-2 text-blue-700">
+              <FaCalendarAlt />
+              <span className="font-semibold">Tenure 2025–26</span>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 md:text-4xl">
+              Tenure 2025–26 Event
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
+            {tenureEvents2025_26.map((event) => (
+              <EventCard
+                key={event._id}
+                event={event}
+                onClick={setSelectedEvent}
+              />
+            ))}
+          </div>
+        </div>
       </div>
+    </section>
 
       <EventModal
         event={selectedEvent}
@@ -611,7 +788,7 @@ const EventsSection = () => {
           overflow: hidden;
         }
       `}</style>
-    </section>
+    </>
   );
 };
 
