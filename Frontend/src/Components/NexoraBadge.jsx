@@ -3,7 +3,9 @@ import badgeImage from "../assets/images/nexora-2027-hackathon-badge.png";
 import "./NexoraBadge.css";
 
 export default function NexoraBadge() {
-  const configuredUrl = import.meta.env.VITE_NEXORA_URL?.trim();
+  const configuredUrl =
+    import.meta.env.VITE_NEXORA_URL?.trim() ||
+    "https://nexora-2-k27.vercel.app/";
   let href = "";
 
   try {
