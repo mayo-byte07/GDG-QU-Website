@@ -8,6 +8,8 @@ import Profile from "./Pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import Protected from "./utils/Protected";
 import ContactPage from "./Pages/Contact";
+import CertificateAdmin, { CertificateLogin } from "./Pages/CertificateAdmin";
+import CertificateVerification from "./Pages/CertificateVerification";
 
 //TODO: Modularize the whole thing later
 function App() {
@@ -33,8 +35,11 @@ function App() {
             />
           </Route>
 
-          {/* Admin area removed; keep stale admin URLs out of the public site. */}
-          <Route path="/admin/*" element={<Navigate to="/" replace />} />
+          <Route path="/verify/:certificateId" element={<CertificateVerification />} />
+          <Route path="/admin/login" element={<CertificateLogin />} />
+          <Route path="/admin/certificates" element={<CertificateAdmin />} />
+          <Route path="/admin" element={<Navigate to="/admin/certificates" replace />} />
+          <Route path="/admin/*" element={<Navigate to="/admin/certificates" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -11,7 +11,7 @@ In the Vercel project settings, set **Root Directory** to the repository root (t
 | `SUPABASE_URL` | The Supabase project URL, such as `https://<project-ref>.supabase.co` |
 | `SUPABASE_PUBLISHABLE_KEY` | The Supabase publishable key (legacy anon key also works) |
 | `SUPABASE_SECRET_KEY` | Supabase secret key, server-side only; copy it directly from Supabase API Keys settings into Vercel |
-| `SUPABASE_JWKS_URL` | `https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json` |
+| `PUBLIC_SITE_URL` | Public website origin used to build certificate verification links |
 | `VITE_SUPABASE_URL` | Same Supabase project URL, for the browser client |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Same publishable key, for the browser client |
 
@@ -33,7 +33,7 @@ The password is managed by Supabase Auth, which stores password hashes; the allo
 
 ## Deploy and use
 
-Save the Vercel environment settings and redeploy. Sign in at `/login` using an account whose email is in `public.admin_users`. `/admin` checks the account against the database before rendering the dashboard. Google and GitHub sign-in have been removed from the app; you can disable those providers in Supabase as well.
+Save the Vercel environment settings and redeploy. Sign in at `/admin/login` using a confirmed account whose email is in `public.admin_users`; certificate role access is checked again by the server API. `/admin` redirects to `/admin/certificates`. Google and GitHub sign-in are not used by this project.
 
 For local development, copy `backend.env.sample` to `.env` in the repository root and fill in the Supabase server variables, including the secret key. The root `.env` is gitignored. Keep the browser's `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in `Frontend/.env.local`. Then run `npm run dev` from the repository root; it starts the local API and Vite, and Vite proxies `/api` to the API server.
 
