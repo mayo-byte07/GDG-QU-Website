@@ -17,6 +17,14 @@ const api = async (path, token, options = {}) => {
   return data;
 };
 
+const ADMIN_ROLES = ["super_admin", "certificate_manager", "event_manager", "viewer"];
+const getAccessRole = (access) => {
+  if (!ADMIN_ROLES.includes(access?.role)) {
+    throw new Error("Your admin account did not return a valid role. Check that the certificate-management SQL setup has been applied in Supabase, then redeploy the project.");
+  }
+  return access.role;
+};
+
 export function CertificateLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState(""); const [password, setPassword] = useState("");
@@ -28,7 +36,8 @@ export function CertificateLogin() {
       const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
       const access = await api("access", data.session.access_token);
-      navigate("/admin/certificates", { replace: true, state: { role: access.role } });
+      getAccessRole(access);
+      navigate("/admin/certificates", { replace: true });
     } catch (e2) { setError(e2.message); }
     finally { setBusy(false); }
   };
@@ -58,8 +67,24 @@ export default function CertificateAdmin() {
       if (!supabase) { setError("Supabase is not configured."); setLoading(false); return; }
       const { data } = await supabase.auth.getSession(); const currentToken = data.session?.access_token;
       if (!currentToken) { navigate("/admin/login", { replace: true }); return; }
-      try { const access = await api("access", currentToken); if (!alive) return; setToken(currentToken); setRole(access.role); await refresh(currentToken); }
-      catch { await supabase.auth.signOut(); navigate("/admin/login", { replace: true }); }
+      try {
+        const access = await api("access", currentToken);
+        if (!alive) return;
+        setToken(currentToken);
+        try {
+          setRole(getAccessRole(access));
+          await refresh(currentToken);
+        } catch (accessError) {
+          setError(accessError.message);
+        }
+      }
+      catch (accessError) {
+        await supabase.auth.signOut();
+        if (alive) {
+          setError(accessError.message);
+          navigate("/admin/login", { replace: true });
+        }
+      }
       finally { if (alive) setLoading(false); }
     })();
     return () => { alive = false; };
@@ -68,7 +93,7 @@ export default function CertificateAdmin() {
   const signOut = async () => { await supabase?.auth.signOut(); navigate("/admin/login", { replace: true }); };
   if (loading) return <main className="cert-admin-loading">Loading certificate workspace…</main>;
   if (!token) return <Navigate to="/admin/login" replace />;
-  return <main className="cert-admin"><aside className="cert-sidebar"><div className="cert-brand"><span>GDG</span><small>Quantum University</small></div><p className="cert-kicker">CERTIFICATE MANAGEMENT</p>{NAV.filter((item) => item !== "Administrators" || role === "super_admin").map((item) => <button key={item} className={section === item ? "active" : ""} onClick={() => setSection(item)}>{item}</button>)}<div className="cert-sidebar-bottom"><span>{role.replaceAll("_", " ")}</span><button onClick={signOut}>Sign out</button><a href="/">← Back to website</a></div></aside><section className="cert-workspace"><header><div><span className="cert-kicker">GDG QU ADMINISTRATION</span><h1>{section}</h1></div><button className="cert-secondary" onClick={() => refresh()}>Refresh</button></header>{error && <div className="cert-alert cert-error">{error}</div>}{notice && <div className="cert-alert">{notice}<button onClick={() => setNotice("")}>×</button></div>}
+  return <main className="cert-admin"><aside className="cert-sidebar"><div className="cert-brand"><span>GDG</span><small>Quantum University</small></div><p className="cert-kicker">CERTIFICATE MANAGEMENT</p>{NAV.filter((item) => item !== "Administrators" || role === "super_admin").map((item) => <button key={item} className={section === item ? "active" : ""} onClick={() => setSection(item)}>{item}</button>)}<div className="cert-sidebar-bottom"><span>{typeof role === "string" ? role.replaceAll("_", " ") : "Role unavailable"}</span><button onClick={signOut}>Sign out</button><a href="/">← Back to website</a></div></aside><section className="cert-workspace"><header><div><span className="cert-kicker">GDG QU ADMINISTRATION</span><h1>{section}</h1></div><button className="cert-secondary" onClick={() => refresh()}>Refresh</button></header>{error && <div className="cert-alert cert-error">{error}</div>}{notice && <div className="cert-alert">{notice}<button onClick={() => setNotice("")}>×</button></div>}
     {section === "Overview" && <Overview data={dashboard} />}
     {section === "Events" && <Events events={events} token={token} role={role} run={run} />}
     {section === "Templates" && <Templates templates={templates} token={token} role={role} run={run} />}
