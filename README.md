@@ -20,9 +20,9 @@ npm install
 npm run dev
 ```
 
-The frontend runs on Vite. To use features that load or change events, team members, contact messages, or account data, set `VITE_BACKEND_URL` in `Frontend/.env` to an API server that provides those endpoints. No backend server is included in this repository.
+The frontend runs on Vite. The repository also includes Vercel serverless API routes for admin access and certificate management. Existing event, contact, and profile data features call the separate API configured by `VITE_BACKEND_URL`; that service is not included here.
 
-The Supabase client is configured with `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in `Frontend/.env`. Use the publishable key in frontend configuration; never put a Supabase secret key in a `VITE_*` variable or commit it to the repository. Add these same two variables to the Vercel project's environment settings before deploying.
+For the certificate system, configure `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in `Frontend/.env.local`. Configure `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, and `PUBLIC_SITE_URL` in the repository-root `.env` locally and in Vercel's server environment. Keep the secret key out of every `VITE_*` variable. Setup details are in [`docs/CERTIFICATE-SYSTEM.md`](docs/CERTIFICATE-SYSTEM.md).
 
 ---
 

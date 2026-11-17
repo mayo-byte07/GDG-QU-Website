@@ -19,9 +19,13 @@
   },
   "scripts": {
     "dev": "node scripts/dev.js",
-    "build": "npm run build --prefix Frontend"
+    "build": "npm run build --prefix Frontend",
+    "test:certificates": "node --test tests/certificates.test.js"
   },
   "dependencies": {
-    "@supabase/server": "^1.9.2"
+    "@supabase/server": "^1.9.2",
+    "jszip": "^3.10.1",
+    "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.4"
   }
 }
