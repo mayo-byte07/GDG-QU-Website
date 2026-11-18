@@ -93,7 +93,17 @@ async function issueOne(ctx, admin, email, payload, idempotencyKey = null) {
 }
 
 export default async function handler(req, res) {
-  const parts = (req.query?.path || []).map((p) => decodeURIComponent(p));
+  const routeParam = req.query?.path;
+  const pathname = new URL(req.url || "/", "http://localhost").pathname;
+  const routeFromUrl = pathname.startsWith("/api/certificates/")
+    ? pathname.slice("/api/certificates/".length).split("/").filter(Boolean)
+    : [];
+  const routeParts = Array.isArray(routeParam)
+    ? routeParam
+    : typeof routeParam === "string" && routeParam
+      ? routeParam.split("/").filter(Boolean)
+      : routeFromUrl;
+  const parts = routeParts.map((p) => decodeURIComponent(p));
   const method = req.method || "GET";
   try {
     if (parts[0] === "verify" && parts[1] && method === "GET") return send(res, await verify(req, parts[1]));
