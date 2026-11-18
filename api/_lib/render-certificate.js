@@ -1,5 +1,7 @@
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib/dist/pdf-lib.esm.js";
+import pdfLib from "pdf-lib";
 import QRCode from "qrcode";
+
+const { PDFDocument, StandardFonts, rgb } = pdfLib;
 
 const BUCKET = "certificate-files";
 const SITE_URL = (process.env.PUBLIC_SITE_URL || "https://gdg-quantumuniversity.me").replace(/\/$/, "");
