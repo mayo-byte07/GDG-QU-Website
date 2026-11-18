@@ -215,7 +215,7 @@ export default async function handler(req, res) {
     }
     if (parts[0] === "certificates" && method === "GET") {
       const page = Math.max(1, Number(req.query?.page) || 1); const pageSize = Math.min(100, Math.max(1, Number(req.query?.page_size) || 25));
-      let query = db.from("certificates").select("id,certificate_id,recipient_name,recipient_email,event_id,template_id,category,issue_date,status,generation_status,created_at,revoked_at,revocation_reason,certificate_events(name)", { count: "exact" });
+      let query = db.from("certificates").select("id,certificate_id,recipient_name,recipient_qid,recipient_email,event_id,template_id,category,issue_date,status,generation_status,created_at,revoked_at,revocation_reason,certificate_events(name)", { count: "exact" });
       if (admin.role === "event_manager") {
         const { data: links, error: linkError } = await db.from("certificate_event_access").select("event_id").eq("admin_email", email);
         if (linkError) throw linkError; const ids = (links || []).map((item) => item.event_id);
@@ -408,7 +408,7 @@ async function verify(req, certificateId) {
       downloadUrl = signed?.signedUrl || null;
     }
   }
-  return json({ status: data.status === "revoked" ? "revoked" : "verified", certificate: { certificate_id: data.certificate_id, recipient_name: data.recipient_name, category: data.category, issue_date: data.issue_date, event_name: data.event_name, organization: data.organization, event_date: data.event_date, revoked_at: data.revoked_at }, download_url: downloadUrl });
+  return json({ status: data.status === "revoked" ? "revoked" : "verified", certificate: { certificate_id: data.certificate_id, recipient_name: data.recipient_name, recipient_qid: data.recipient_qid, category: data.category, issue_date: data.issue_date, event_name: data.event_name, organization: data.organization, event_date: data.event_date, revoked_at: data.revoked_at }, download_url: downloadUrl });
 }
 
 async function body(req) { return readJson(await toWebRequest(req)); }

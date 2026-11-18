@@ -137,3 +137,6 @@ sketch
 
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node,react,vite,typescript
+
+.npm-cache/
+tmp/
