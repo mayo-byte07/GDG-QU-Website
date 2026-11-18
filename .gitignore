@@ -140,3 +140,6 @@ sketch
 
 .npm-cache/
 tmp/
+
+.npm-cache/
+tmp/
